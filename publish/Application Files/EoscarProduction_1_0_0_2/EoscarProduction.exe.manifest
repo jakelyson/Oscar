@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="EoscarProduction.exe" version="1.0.0.2" publicKeyToken="82fafb4dc9e19660" language="neutral" processorArchitecture="msil" type="win32" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="EoscarProduction" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="EoscarProduction.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!--
+          UAC Manifest Options
+          If you want to change the Windows User Account Control level replace the
+          requestedExecutionLevel node with one of the following.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+         If you want to utilize File and Registry Virtualization for backward
+         compatibility then delete the requestedExecutionLevel node.
+    -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="EoscarProduction.exe" size="33248">
+      <assemblyIdentity name="EoscarProduction" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>smzkTMN3Yo1hh18rGPp/6uvqH+uFkle4v6Cy6rNYz9o=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="EoscarProduction.exe.config" size="189">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>rl5/qDc7Jz+tB+BIbOv9iMGPlRe6YJwrjmU09dnlPcs=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=DESKTOP-SCV8LD4\jake_" issuerKeyHash="6c62630cb72a3a4af07a795f25790eba6695e491" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>laZy2HgqvNkx+28bwDxbHdXEc4WAYN1dx5Tmw4bOoOQ=</DigestValue></Reference></SignedInfo><SignatureValue>fBJ7T8MctN/mEtb3oBbiq6k7cBLmuKWCqeXZz25oGoib5wEovQ3J/rJMuIQQfJlekI5RXR9LttmoZLx9a4cyvmld9NfFa3WkC5PEfoWI74SSiPFrb0YGhGukDYghEl1ogQkpghtBXdIHavP+1qjvd9iJY1CXgT2McuHD7X7ZGI8=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>3PfFD/Bepr7c0966VpxDGMg+vuwYH/RPxFNG2k/jGPLaqxPPMoo42u2yyUdeJ+1eOh+7vMh0kUpj7wyvWNiMnLuAfk1rfZoP/ez2yCzFYoIp3icrKqJwZ/Z5kkc2wy3bt/TtKBVQsH0Ps6Z6w+u4tQcEyU22g2MPWYUleCL1e70=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="e4a0ce86c3e694c75ddd60808573c4d51d5b3cc01b6ffb31d9bc2a78d872a695" Description="" Url=""><as:assemblyIdentity name="EoscarProduction.exe" version="1.0.0.2" publicKeyToken="82fafb4dc9e19660" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=DESKTOP-SCV8LD4\jake_</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>RJbylEmv8Vg0OxLh+RlOW2gnISxZnpElxRXZVpilW84=</DigestValue></Reference></SignedInfo><SignatureValue>RNIPg4j3PZczKuVR7imsfbFOr2BI9YqEoquV6pzgdgjTDsxKybrAb5wnJnPY677xzVENruAM24mIZnTKQNDFJDuvzY46zvQ8jm/G9G92mx/tKs9uyNYbRjJl/RMHWUwJIclT6yl+t5Sq5C7y7sV7nw9k7VBaDFSNmiTYlulKswU=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>3PfFD/Bepr7c0966VpxDGMg+vuwYH/RPxFNG2k/jGPLaqxPPMoo42u2yyUdeJ+1eOh+7vMh0kUpj7wyvWNiMnLuAfk1rfZoP/ez2yCzFYoIp3icrKqJwZ/Z5kkc2wy3bt/TtKBVQsH0Ps6Z6w+u4tQcEyU22g2MPWYUleCL1e70=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB7TCCAVagAwIBAgIQQgNWHnD29q9MS9w/GqVtLjANBgkqhkiG9w0BAQsFADA1MTMwMQYDVQQDHioARABFAFMASwBUAE8AUAAtAFMAQwBWADgATABEADQAXABqAGEAawBlAF8wHhcNMjIwNTE5MDQwOTM3WhcNMjMwNTE5MTAwOTM3WjA1MTMwMQYDVQQDHioARABFAFMASwBUAE8AUAAtAFMAQwBWADgATABEADQAXABqAGEAawBlAF8wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANz3xQ/wXqa+3NPeulacQxjIPr7sGB/0T8RTRtpP4xjy2qsTzzKKONrtsslHXiftXjofu7zIdJFKY+8Mr1jYjJy7gH5Na32aD/3s9sgsxWKCKd4nKyqicGf2eZJHNsMt27f07SgVULB9D7OmesPruLUHBMlNtoNjD1mFJXgi9Xu9AgMBAAEwDQYJKoZIhvcNAQELBQADgYEAv0qpGT/ijLYJWkD7gHeJsp41fLl8QRc+g9IBZ6dp9A8aBHkBzncYZCG1dBb3sGk0oST1IJix7zjhopTYXjV9Wq1Sck9Q9ZydhlveOfybzgmhtAdSbuzpV9+Ekl6dudIZQkn8l6cXzQHEwKKUJucA/mgc5nFuWFv9tYn88GyyEbA=</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>
