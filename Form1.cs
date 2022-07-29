@@ -435,6 +435,158 @@ namespace EoscarProduction
 
 			MessageBox.Show("Done");
 		}
-	}
+
+        private void button1_Click(object sender, EventArgs e) //get production per date
+        {
+            foreach (string item in  Directory.GetFiles(txtOscarProduction.Text))
+            {
+                if (item.Contains("eOscar"))
+                {
+                    GetProduction(item);
+                }
+                else {
+                    getFraud(item);
+                }
+            }
+            MessageBox.Show("Done");
+        }
+
+        private void GetProduction(string path) {
+            xls.Application xl = new xls.Application();
+            xls.Workbooks wbs = xl.Workbooks;
+            xls.Workbook wb = wbs.Open(path);
+
+            xls.Worksheet ws = wb.Worksheets["Production"];
+
+            long row = 1;
+            bool isErrorReport = false;
+            string reportCol = "M"; 
+            StreamWriter fsProd = new StreamWriter(prodPath, true);
+
+            while (true)
+            {
+                this.Text = string.Format("Creating Production Files: {0}", row);
+
+                xls.Range r = ws.Range["A" + row, "R" + row];
+
+                if (r.Cells[1, 5].Text == "Client Reported" )
+                {
+                    isErrorReport = true;
+
+                }
+                else if (r.Cells[1, 6].Text == "Client Reported")
+                {
+                    isErrorReport = true;
+                    reportCol = "N";
+                }
+
+                if (!isErrorReport)
+                {
+                    if (r.Cells[1, 1].Text != string.Empty && r.Cells[1,2].Text != string.Empty && r.Cells[1,10].Text != string.Empty) //userid, date , amount
+                    {
+                        fsProd.WriteLine(string.Format("{0}, {1}, {2}, {3}, {4}, {5}", path, r.Cells[1, 1].Text, //Userid
+                            r.Cells[1, 2].Text, //Date
+                            r.Cells[1, 10].Text, //J - Amount
+                            r.Cells[1, 11].Text,  // K - Holiday Pay
+                            r.Cells[1, 12].Text //L - Night Differential
+                            ));
+                    }
+                }
+
+                if (isErrorReport && ws.Range[reportCol + row].Value == null)
+                {
+                    //close range
+                    Marshal.FinalReleaseComObject(r);
+                    break;
+                }
+
+                //close range
+                Marshal.FinalReleaseComObject(r);
+                row += 1;
+            }
+
+            //release all com objects 
+            Marshal.FinalReleaseComObject(ws);
+
+            wb.Close();
+            Marshal.FinalReleaseComObject(wb);
+
+            xl.Quit();
+            Marshal.FinalReleaseComObject(xl);
+
+            fsProd.Close();
+
+            //MessageBox.Show("Done");
+        }
+
+        private void btn_getProduction_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.Filter = "Eoscar PS|*.xlsx";
+            openFileDialog1.CheckPathExists = true;
+            openFileDialog1.CheckFileExists = false;
+            openFileDialog1.FileName = "Any Excel File";
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                txtOscarProduction.Text = Directory.GetParent( openFileDialog1.FileName ).FullName ;
+            }
+        }
+
+        private void getFraud(string path) {
+            StreamWriter fraud = new StreamWriter(prodPath, true);
+
+            xls.Application xl = new xls.Application();
+            xls.Workbooks wbs = xl.Workbooks;
+            xls.Workbook wb = wbs.Open(path);
+            xls.Worksheet ws = wb.Worksheets["Production"];
+
+            int iRow = 2;
+            int iBlank = 0;
+            while (true)
+            {
+                xls.Range r = ws.Range["A" + iRow, "H" + iRow];
+
+
+                if (r.Cells[1, 3].Text == "Client Reported")
+                {
+                    break;
+                }
+                else if (r.Cells[1,1].Text == "")
+                {
+                    iBlank++;
+                }
+                else
+                {
+                    iBlank = 0;
+                    if (r.Cells[1, 1].Text != string.Empty && r.Cells[1, 2].Text != string.Empty && r.Cells[1,5].Text != string.Empty)
+                    {
+                        fraud.WriteLine(string.Format("{0}, {1}, {2}, {3}, {4}, {5}", path, r.Cells[1, 2].Text, //Userid
+                            r.Cells[1, 1].Text, //Date
+                            r.Cells[1, 5].Text, //J - Amount
+                            r.Cells[1, 7].Text,  // K - Holiday Pay
+                            r.Cells[1, 6].Text //L - Night Differential
+                            ));
+                    }
+                }
+                if (iBlank > 5)
+                {
+                    break;
+                }
+
+                iRow += 1;
+            }
+
+            //release all com objects 
+            Marshal.FinalReleaseComObject(ws);
+
+            wb.Close();
+            Marshal.FinalReleaseComObject(wb);
+
+            xl.Quit();
+            Marshal.FinalReleaseComObject(xl);
+
+            fraud.Close();
+        }
+    }
 	
 }
