@@ -24,6 +24,7 @@ namespace EoscarProduction
 		public string fraudPath = @"D:\Joel Files\Payroll\Fraud.csv";
 		public string banckruptcyPath = @"D:\Joel Files\Payroll\banckruptcy.csv";
 		public string linkPath = @"D:\Joel Files\Payroll\link.csv";
+		private string outputPath = @"D:\Joel Files\Payroll\";
 
 		public Form1()
 		{
@@ -445,7 +446,7 @@ namespace EoscarProduction
                     GetProduction(item);
                 }
                 else {
-                    getFraud(item);
+                    getFraud(item );
                 }
             }
             MessageBox.Show("Done");
@@ -456,68 +457,175 @@ namespace EoscarProduction
             xls.Workbooks wbs = xl.Workbooks;
             xls.Workbook wb = wbs.Open(path);
 
-            xls.Worksheet ws = wb.Worksheets["Production"];
 
-            long row = 1;
-            bool isErrorReport = false;
-            string reportCol = "M"; 
-            StreamWriter fsProd = new StreamWriter(prodPath, true);
+			foreach (xls.Worksheet ws in wb.Worksheets)
+			{
+				switch (ws.Name)
+				{
+					case "STATS":
+						break;
+					case "Other Income":
+						getOtherIncome(ws, outputPath + ws.Name + ".csv" );
+						break;
+					default:
+						GetProduction(ws, outputPath + ws.Name + ".csv");
+						break;
+				}
 
-            while (true)
-            {
-                this.Text = string.Format("Creating Production Files: {0}", row);
-
-                xls.Range r = ws.Range["A" + row, "R" + row];
-
-                if (r.Cells[1, 5].Text == "Client Reported" )
-                {
-                    isErrorReport = true;
-
-                }
-                else if (r.Cells[1, 6].Text == "Client Reported")
-                {
-                    isErrorReport = true;
-                    reportCol = "N";
-                }
-
-                if (!isErrorReport)
-                {
-                    if (r.Cells[1, 1].Text != string.Empty && r.Cells[1,2].Text != string.Empty && r.Cells[1,10].Text != string.Empty) //userid, date , amount
-                    {
-                        fsProd.WriteLine(string.Format("{0}, {1}, {2}, {3}, {4}, {5}", path, r.Cells[1, 1].Text, //Userid
-                            r.Cells[1, 2].Text, //Date
-                            r.Cells[1, 10].Text, //J - Amount
-                            r.Cells[1, 11].Text,  // K - Holiday Pay
-                            r.Cells[1, 12].Text //L - Night Differential
-                            ));
-                    }
-                }
-
-                if (isErrorReport && ws.Range[reportCol + row].Value == null)
-                {
-                    //close range
-                    Marshal.FinalReleaseComObject(r);
-                    break;
-                }
-
-                //close range
-                Marshal.FinalReleaseComObject(r);
-                row += 1;
-            }
-
-            //release all com objects 
-            Marshal.FinalReleaseComObject(ws);
-
+				//release all com objects 
+				Marshal.FinalReleaseComObject(ws);
+			}
+            //xls.Worksheet ws = wb.Worksheets["Production"];
             wb.Close();
             Marshal.FinalReleaseComObject(wb);
 
             xl.Quit();
             Marshal.FinalReleaseComObject(xl);
 
-            fsProd.Close();
-
             //MessageBox.Show("Done");
         }
+
+		private void getOtherIncome(xls.Worksheet ws, string output ) {
+			StreamWriter fsOthereIncome = new StreamWriter(output, false);
+
+			int row = 3;
+			int blank = 0;
+			int userid = 0;
+			string remarks = string.Empty;
+			decimal amount = 0;
+			int prevUserid = 0;
+			while (true)
+			{
+				this.Text = string.Format("Creating Other Income Files: {0}", row);
+				xls.Range r = ws.Range["A" + row, "I" + row];
+
+				if (r.Cells[1, 1].Text + r.Cells[1, 2].Text != string.Empty)
+				{
+					blank = 0;
+					if (int.TryParse(r.Cells[1, 1].Text, out userid))
+					{
+						if (prevUserid != userid)
+						{
+							if (prevUserid != 0)
+							{
+								fsOthereIncome.WriteLine(string.Format("{0:0000}, {1}, {2}", prevUserid, remarks, amount));
+							}
+							prevUserid = userid;
+							amount = decimal.Parse(r.Cells[8].Text);
+							remarks = r.Cells[1, 9].Text;
+						}
+						else
+						{
+							amount += decimal.Parse(r.Cells[8].Text);
+							remarks = r.Cells[1, 9].Text;
+						}
+					}
+					else
+					{
+
+						if (prevUserid != 0)
+						{
+							fsOthereIncome.WriteLine(string.Format("{0:0000}, {1}, {2}", prevUserid, remarks, amount));
+						}
+						prevUserid = 0;
+						amount = 0;
+						remarks = r.Cells[1, 9].Text ;
+					}
+				}
+				else
+				{
+					blank += 1;
+					if (blank > 5)
+					{
+						//write last person
+						fsOthereIncome.WriteLine(string.Format("{0:0000}, {1}, {2}", prevUserid, remarks, amount));
+
+						//close range
+						Marshal.FinalReleaseComObject(r);
+						break;
+					}
+				}
+				Marshal.FinalReleaseComObject(r);
+				row += 1;
+			}
+
+			fsOthereIncome.Close();
+		}
+		private void GetProduction(xls.Worksheet ws, string output ) {
+			StreamWriter fraud = new StreamWriter(output + ".csv", false);
+			StreamWriter fraudError = new StreamWriter(output + ".error.csv", false);
+
+			int iRow = 2;
+			int iBlank = 0;
+			decimal Amount = 0 ;
+			bool isErrorReport = false;
+			while (true)
+			{
+				xls.Range r = ws.Range["A" + iRow, "K" + iRow];
+
+				this.Text = ws.Name + " " + iRow;
+
+				if (r.Cells[1, 1].Text == "User ID")
+				{
+					isErrorReport = true;
+				}
+
+
+				//if (isErrorReport)
+				//{
+				//	MessageBox.Show(r.Cells[1, 11].Text);
+				//}
+				if (isErrorReport && decimal.TryParse(r.Cells[1, 11].Text, out Amount))
+				{
+					if (Amount != 0)
+					{
+						//3 userid, 
+						fraudError.WriteLine(string.Format("{0},{1}", r.Cells[1, 1].Text, Amount));
+					}
+				}
+
+				else if (r.Cells[1, 1].Text == "")
+				{
+					iBlank++;
+				}
+				else
+				{
+					iBlank = 0;
+					if (r.Cells[1, 1].Text != string.Empty && r.Cells[1, 2].Text != string.Empty && r.Cells[1, 5].Text != string.Empty)
+					{
+						fraud.WriteLine(string.Format("{0}, {1}, {2}, {3}, {4}, {5}", ws.Name, r.Cells[1, 2].Text, //Userid
+							r.Cells[1, 1].Text, //Date
+							r.Cells[1, 5].Text, //J - Amount
+							r.Cells[1, 7].Text,  // K - Holiday Pay
+							r.Cells[1, 6].Text //L - Night Differential
+							));
+					}
+				}
+
+				if (isErrorReport && ws.Range["A" + iRow].Value == null)
+				{
+					//close range
+					Marshal.FinalReleaseComObject(r);
+					break;
+				}
+
+
+
+				if (iBlank > 10)
+				{
+					break;
+				}
+
+				Marshal.FinalReleaseComObject(r);
+				iRow += 1;
+			}
+
+			//release all com objects 
+			Marshal.FinalReleaseComObject(ws);
+
+			fraud.Close();
+			fraudError.Close();
+		}
 
         private void btn_getProduction_Click(object sender, EventArgs e)
         {
@@ -531,53 +639,109 @@ namespace EoscarProduction
                 txtOscarProduction.Text = Directory.GetParent( openFileDialog1.FileName ).FullName ;
             }
         }
+		private void getFraud(xls.Worksheet ws, string outputpath) {
+			StreamWriter fraud = new StreamWriter(outputpath);
+			StreamWriter fraudError = new StreamWriter( outputpath + ".Error.csv", false);
 
+			int iRow = 2;
+			int iBlank = 0;
+			decimal Amount = 0;
+			bool isErrorReport = false;
+			int iErrAmountCol = 0;
+			int iErrUserIDCol = 0;
+
+			while (true)
+			{
+				xls.Range r = ws.Range["A" + iRow, "K" + iRow];
+				this.Text = getFilename(ws.Name) + " " + iRow;
+
+
+				if (r.Cells[1, 1].Text == "User ID")
+				{
+
+					isErrorReport = true;
+					iErrUserIDCol = 1;
+					iErrAmountCol = r.Cells[1, 11].Text == "Total" ? 11 : 6;
+
+				}
+				else if (r.Cells[1, 1].Text == "Error Report")
+				{
+
+				}
+				else if (isErrorReport)
+				{
+					if (decimal.TryParse(r.Cells[1, iErrAmountCol].Text, out Amount))
+					{
+						//3 userid, 
+						if (Amount > 0)
+						{
+							fraudError.WriteLine(string.Format("{0},{1}", r.Cells[1, iErrUserIDCol].Text, Amount));
+						}
+					}
+				}
+				else if (r.Cells[1, 1].Text == "")
+				{
+					iBlank++;
+				}
+				else
+				{
+					iBlank = 0;
+					if (r.Cells[1, 1].Text != string.Empty && r.Cells[1, 2].Text != string.Empty && r.Cells[1, 5].Text != string.Empty)
+					{
+						fraud.WriteLine(string.Format("{0}, {1}, {2}, {3}, {4}, {5}", ws.Name, r.Cells[1, 2].Text, //Userid
+							r.Cells[1, 1].Text, //Date
+							r.Cells[1, 5].Text, //J - Amount
+							r.Cells[1, 7].Text,  // K - Holiday Pay
+							r.Cells[1, 6].Text //L - Night Differential
+							));
+					}
+					
+				}
+
+				if (isErrorReport && ws.Range["A" + iRow].Value == null)
+				{
+					//close range
+					Marshal.FinalReleaseComObject(r);
+					break;
+				}
+
+				//if (r.Cells[1, 1].Text == "")
+				//{
+				//	iBlank++;
+				//}
+
+				if (iBlank > 10)
+				{
+					break;
+				}
+
+				iRow += 1;
+			}
+
+			fraud.Close();
+			fraudError.Close();
+		}
         private void getFraud(string path) {
-            StreamWriter fraud = new StreamWriter(prodPath, true);
 
-            xls.Application xl = new xls.Application();
+
+			xls.Application xl = new xls.Application();
             xls.Workbooks wbs = xl.Workbooks;
             xls.Workbook wb = wbs.Open(path);
-            xls.Worksheet ws = wb.Worksheets["Production"];
-
-            int iRow = 2;
-            int iBlank = 0;
-            while (true)
-            {
-                xls.Range r = ws.Range["A" + iRow, "H" + iRow];
 
 
-                if (r.Cells[1, 3].Text == "Client Reported")
-                {
-                    break;
-                }
-                else if (r.Cells[1,1].Text == "")
-                {
-                    iBlank++;
-                }
-                else
-                {
-                    iBlank = 0;
-                    if (r.Cells[1, 1].Text != string.Empty && r.Cells[1, 2].Text != string.Empty && r.Cells[1,5].Text != string.Empty)
-                    {
-                        fraud.WriteLine(string.Format("{0}, {1}, {2}, {3}, {4}, {5}", path, r.Cells[1, 2].Text, //Userid
-                            r.Cells[1, 1].Text, //Date
-                            r.Cells[1, 5].Text, //J - Amount
-                            r.Cells[1, 7].Text,  // K - Holiday Pay
-                            r.Cells[1, 6].Text //L - Night Differential
-                            ));
-                    }
-                }
-                if (iBlank > 5)
-                {
-                    break;
-                }
-
-                iRow += 1;
-            }
+			foreach (xls.Worksheet item in wb.Worksheets)
+			{
+				switch (item.Name.ToUpper())
+				{
+					case "STATS":
+						break;
+					default:
+						getFraud(item, string.Format("{0}{1}_{2}{3}", outputPath ,wb.Name, item.Name , ".csv"));
+						break;
+				}
+			}
 
             //release all com objects 
-            Marshal.FinalReleaseComObject(ws);
 
             wb.Close();
             Marshal.FinalReleaseComObject(wb);
@@ -585,8 +749,11 @@ namespace EoscarProduction
             xl.Quit();
             Marshal.FinalReleaseComObject(xl);
 
-            fraud.Close();
-        }
+		}
+
+		private string  getFilename(string path) {
+			return path.Substring(path.LastIndexOf(@"\")+1); 
+		}
     }
 	
 }

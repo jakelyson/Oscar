@@ -32,9 +32,10 @@ D:\Joel Files\Projects\Oscar\bin\Debug\EoscarProduction.exe.manifest
 D:\Joel Files\Projects\Oscar\bin\Debug\EoscarProduction.application
 D:\Joel Files\Projects\Oscar\bin\Debug\EoscarProduction.exe
 D:\Joel Files\Projects\Oscar\bin\Debug\EoscarProduction.pdb
-D:\Joel Files\Projects\Oscar\obj\Debug\EoscarProduction.csprojResolveAssemblyReference.cache
 D:\Joel Files\Projects\Oscar\obj\Debug\EoscarProduction.Form1.resources
 D:\Joel Files\Projects\Oscar\obj\Debug\EoscarProduction.Properties.Resources.resources
 D:\Joel Files\Projects\Oscar\obj\Debug\EoscarProduction.csproj.GenerateResource.Cache
 D:\Joel Files\Projects\Oscar\obj\Debug\EoscarProduction.exe.manifest
 D:\Joel Files\Projects\Oscar\obj\Debug\EoscarProduction.application
+D:\Joel Files\Projects\Oscar\obj\Debug\EoscarProduction.csproj.AssemblyReference.cache
+D:\Joel Files\Projects\Oscar\obj\Debug\EoscarProduction.csproj.CoreCompileInputs.cache
