@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using System.IO; 
+using System.IO;
 using xls = Microsoft.Office.Interop.Excel;
 
 
@@ -439,7 +439,12 @@ namespace EoscarProduction
 
         private void button1_Click(object sender, EventArgs e) //get production per date
         {
-            foreach (string item in  Directory.GetFiles(txtOscarProduction.Text))
+			//delete summary files
+			if (File.Exists(outputPath + "Summary.csv")) File.Delete(outputPath + "Summary.csv");
+			if (File.Exists(outputPath + "errorSummary.csv")) File.Delete(outputPath + "errorSummary.csv");
+			if (File.Exists(outputPath + "otherIncomeSummary.csv")) File.Delete(outputPath + "otherIncomeSummary.csv"); 
+
+			foreach (string item in  Directory.GetFiles(txtOscarProduction.Text))
             {
                 if (item.Contains("eOscar"))
                 {
@@ -449,6 +454,7 @@ namespace EoscarProduction
                     getFraud(item );
                 }
             }
+
             MessageBox.Show("Done");
         }
 
@@ -487,6 +493,7 @@ namespace EoscarProduction
 
 		private void getOtherIncome(xls.Worksheet ws, string output ) {
 			StreamWriter fsOthereIncome = new StreamWriter(output, false);
+			StreamWriter summary = new StreamWriter(string.Format(@"{0}\{1}", outputPath, "OtherIncomeSummary.csv"), true);
 
 			int row = 3;
 			int blank = 0;
@@ -550,10 +557,25 @@ namespace EoscarProduction
 			}
 
 			fsOthereIncome.Close();
+
+			StreamReader fs = File.OpenText(output);
+			summary.Write(fs.ReadToEnd()); 
+			summary.Close();
 		}
 		private void GetProduction(xls.Worksheet ws, string output ) {
 			StreamWriter fraud = new StreamWriter(output + ".csv", false);
 			StreamWriter fraudError = new StreamWriter(output + ".error.csv", false);
+			StreamWriter summary = new StreamWriter(string.Format(@"{0}\{1}", outputPath, "Summary.csv"), true);
+			StreamWriter errorSummary = new StreamWriter(string.Format(@"{0}\{1}", outputPath, "ErrorSummary.csv"), true);
+
+
+			string wsName = ws.Name;
+
+			if (ws.Name.ToUpper() == "PRODUCTION")
+			{
+				//replace to excel name
+				wsName = getProjectName(output);
+			}
 
 			int iRow = 2;
 			int iBlank = 0;
@@ -593,7 +615,7 @@ namespace EoscarProduction
 					iBlank = 0;
 					if (r.Cells[1, 1].Text != string.Empty && r.Cells[1, 2].Text != string.Empty && r.Cells[1, 5].Text != string.Empty)
 					{
-						fraud.WriteLine(string.Format("{0}, {1}, {2}, {3}, {4}, {5}", ws.Name, r.Cells[1, 2].Text, //Userid
+						fraud.WriteLine(string.Format("{0}, {1}, {2}, {3}, {4}, {5}", wsName, r.Cells[1, 2].Text, //Userid
 							r.Cells[1, 1].Text, //Date
 							r.Cells[1, 5].Text, //J - Amount
 							r.Cells[1, 7].Text,  // K - Holiday Pay
@@ -625,6 +647,15 @@ namespace EoscarProduction
 
 			fraud.Close();
 			fraudError.Close();
+
+			StreamReader fs = File.OpenText(output + ".csv");
+			StreamReader  fsError = File.OpenText(output + ".error.csv");
+
+			summary.Write(fs.ReadToEnd());
+			errorSummary.Write(fsError.ReadToEnd()); 
+
+			summary.Close();
+			errorSummary.Close();
 		}
 
         private void btn_getProduction_Click(object sender, EventArgs e)
@@ -642,6 +673,16 @@ namespace EoscarProduction
 		private void getFraud(xls.Worksheet ws, string outputpath) {
 			StreamWriter fraud = new StreamWriter(outputpath);
 			StreamWriter fraudError = new StreamWriter( outputpath + ".Error.csv", false);
+			StreamWriter summary = new StreamWriter(string.Format(@"{0}\{1}", outputPath, "Summary.csv"), true);
+			StreamWriter errorSummary = new StreamWriter(string.Format(@"{0}\{1}", outputPath, "ErrorSummary.csv"), true);
+
+			string wsName = ws.Name;
+
+			if (ws.Name.ToUpper() == "PRODUCTION")
+			{
+				//replace to excel name 
+				wsName = getProjectName(outputpath);
+			}
 
 			int iRow = 2;
 			int iBlank = 0;
@@ -688,7 +729,7 @@ namespace EoscarProduction
 					iBlank = 0;
 					if (r.Cells[1, 1].Text != string.Empty && r.Cells[1, 2].Text != string.Empty && r.Cells[1, 5].Text != string.Empty)
 					{
-						fraud.WriteLine(string.Format("{0}, {1}, {2}, {3}, {4}, {5}", ws.Name, r.Cells[1, 2].Text, //Userid
+						fraud.WriteLine(string.Format("{0}, {1}, {2}, {3}, {4}, {5}", wsName, r.Cells[1, 2].Text, //Userid
 							r.Cells[1, 1].Text, //Date
 							r.Cells[1, 5].Text, //J - Amount
 							r.Cells[1, 7].Text,  // K - Holiday Pay
@@ -720,6 +761,19 @@ namespace EoscarProduction
 
 			fraud.Close();
 			fraudError.Close();
+
+			//insert to summary 
+			StreamReader fs = File.OpenText (outputpath);
+
+			summary.Write(fs.ReadToEnd());
+			fs.Close(); 
+
+			fs = File.OpenText(outputpath + ".Error.csv");
+			errorSummary.Write(fs.ReadToEnd());
+
+			fs.Close(); 
+			summary.Close(); 
+			errorSummary.Close();
 		}
         private void getFraud(string path) {
 
@@ -753,7 +807,15 @@ namespace EoscarProduction
 
 		private string  getFilename(string path) {
 			return path.Substring(path.LastIndexOf(@"\")+1); 
+		
 		}
-    }
-	
+
+		private string getProjectName(string output)
+		{
+			string wsName = output.Substring(output.LastIndexOf(@"\"));
+			wsName = wsName.Substring(1, wsName.Length - 38);
+
+			return wsName;
+		}
+	}
 }

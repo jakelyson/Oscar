@@ -42,14 +42,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="EoscarProduction.exe" size="47072">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="EoscarProduction.exe" size="48096">
       <assemblyIdentity name="EoscarProduction" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>mGPw/kTiC6d9RTQHXrZWqUMfWQwY1ekJjzG0HvpoUUI=</dsig:DigestValue>
+        <dsig:DigestValue>7rnM7c7u00IrDlEyFi4vBackkFqfKkDb5UizNjYqTAI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
